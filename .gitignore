@@ -7,5 +7,4 @@ myapp.log
 .project
 /target/
 /transaction-logs/*
-/src/
-pom.xml
+ 
