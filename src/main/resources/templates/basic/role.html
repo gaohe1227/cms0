@@ -1,0 +1,119 @@
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/jquery-easyui-1.5.2/themes/default/easyui.css"/>
+	<link rel="stylesheet" type="text/css" href="/jquery-easyui-1.5.2/themes/icon.css"/>
+	<link rel="stylesheet" type="text/css" href="/jquery-easyui-1.5.2/demo/demo.css" />
+	<script type="text/javascript" src="/jquery-easyui-1.5.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/jquery-easyui-1.5.2/jquery.easyui.min.js"></script>
+</head>
+<body>
+	<h2>Basic DataGrid</h2>
+	<p>The DataGrid is created from markup, no JavaScript code needed.</p>
+	<div style="margin:20px 0;"></div>
+	
+	<table id="dg" class="easyui-datagrid" title="Basic DataGrid" style="width:700px;height:250px"
+			data-options="singleSelect:true,collapsible:true,url:'/role/list',method:'get'">
+		<thead>
+			<tr>
+				<th data-options="field:'id',width:80">id</th>
+				<th data-options="field:'roleName',width:100">roleName</th> 
+				<th data-options="field:'status',width:60,align:'center'">status</th>
+			</tr>
+		</thead>
+	</table>
+<div id="toolbar">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newRole()">添加角色</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editRole()">编辑角色</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyRole()">删除角色</a>
+</div>
+<div id="dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+		closed="true" buttons="#dlg-buttons">
+	<div class="ftitle"></div>
+	<form id="fm" method="post"  >
+		<div class="fitem">
+			<label>角色名称:</label>
+			<input name="roleName" class="easyui-validatebox" id="roleName" placeholder="角色名称"  required="true" />
+		</div>
+	<!-- 	<div class="fitem">
+			<label>Last Name:</label>
+			<input name="lastname" class="easyui-validatebox" required="true" />
+		</div>
+		<div class="fitem">
+			<label>Phone:</label>
+			<input name="phone" />
+		</div>
+		<div class="fitem">
+			<label>Email:</label>
+			<input name="email" class="easyui-validatebox" validType="email" />
+		</div> -->
+	</form>
+</div>
+<div id="dlg-buttons">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">保存</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">Cancel</a>
+</div>
+<script type="text/javascript">
+
+function newRole(){
+	$('#dlg').dialog('open').dialog('setTitle','添加');
+	$('#fm').form('clear');
+	url = '/role/edit';
+} 
+
+
+function save(){
+	$('#fm').form('submit',{
+		url: url,
+		onSubmit: function(){
+			return $(this).form('validate');
+		},
+		success: function(result){ 
+			var result = eval('('+result+')');
+			if (result.state==0){
+				$.messager.show({
+					title: 'Error',
+					msg: result.message
+				});
+			} else {
+				$('#dlg').dialog('close');		// close the dialog
+				$('#dg').datagrid('reload');	// reload the user data
+			}
+		}
+	});
+}
+function editRole(){
+	var row = $('#dg').datagrid('getSelected');
+	if (row){
+		$('#dlg').dialog('open').dialog('setTitle','修改');
+		$('#fm').form('load',row);
+		//url = 'update_user.php?id='+row.id;
+		url = '/role/edit';
+	}
+	 
+	
+}
+function destroyRole(){
+	 
+	var row = $('#dg').datagrid('getSelected');
+	if (row){
+		$.messager.confirm('Confirm','是否删除这个角色?',function(r){
+			if (r){
+				$.post('/role/deleteRole.do',{id:row.id},function(result){
+					if (result==true){
+						$('#dg').datagrid('reload');	// reload the user data
+					} else {
+						$.messager.show({	// show error message
+							title: 'Error',
+							msg: "删除失败"
+						});
+					}
+				},'json');
+			}
+		});
+	}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+ 
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"   xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" >
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta charset="UTF-8" />
+    <title>用户登录</title>
+    <script src="jquery-easyui-1.5.2/jquery.min.js"></script>
+    <script src="jquery-easyui-1.5.2/jquery.easyui.min.js"></script>
+    <link href="jquery-easyui-1.5.2/themes/gray/easyui.css" rel="stylesheet" />
+    <link href="jquery-easyui-1.5.2/themes/icon.css" rel="stylesheet" />
+    <script type="text/javascript">
+        document.onkeydown = function (e) {
+            var event = e || window.event;
+            var code = event.keyCode || event.which || event.charCode;
+            if (code == 13) {
+                login();
+            }
+        }
+        $(function () {
+            $("input[name='usercode']").focus();
+        });
+        function cleardata() {
+            $('#loginForm').form('clear');
+        }
+        function login() {
+            if ($("input[name='usercode']").val() == "" || $("input[name='userpwd']").val() == "") {
+                $("#showMsg").html("用户名或密码为空，请输入");
+                $("input[name='login']").focus();
+            } else {
+            	$("#loginForm").submit();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="loginWin" class="easyui-window" title="登录" style="width:350px;height:188px;padding:5px;"
+         minimizable="false" maximizable="false" resizable="false" collapsible="false">
+        <div class="easyui-layout" fit="true">
+            <div region="center" border="false" style="padding:5px;background:#fff;border:1px solid #ccc;">
+                <form id="loginForm" method="post" action="login.do"> 
+                    <div style="padding:5px 0;">
+                        <label for="login">帐号:</label>
+                        <input type="text" name="usercode" style="width:260px;" />
+                    </div>
+                    <div style="padding:5px 0;">
+                        <label for="password">密码:</label>
+                        <input type="password" name="userpwd" style="width:260px;" />
+                    </div>
+                    <div style="padding:5px 0;text-align: center;color: red;" id="showMsg">    <p th:text="${errorMsg}"></p>  </div>
+                </form>
+            </div>
+            <div region="south" border="false" style="text-align:right;padding:5px 0;">
+                <a class="easyui-linkbutton" iconcls="icon-ok" href="javascript:void(0)" onclick="login()">登录</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/jquery-easyui-1.5.2/themes/default/easyui.css"/>
+	<link rel="stylesheet" type="text/css" href="/jquery-easyui-1.5.2/themes/icon.css"/>
+	<link rel="stylesheet" type="text/css" href="/jquery-easyui-1.5.2/demo/demo.css" />
+	<script type="text/javascript" src="/jquery-easyui-1.5.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/jquery-easyui-1.5.2/jquery.easyui.min.js"></script>
+</head>
+<body>
+	<h2>Basic DataGrid</h2>
+	<p>The DataGrid is created from markup, no JavaScript code needed.</p>
+	<div style="margin:20px 0;"></div>
+	
+	<table id="dg" class="easyui-datagrid" title="Basic DataGrid" style="width:700px;"
+			data-options="singleSelect:true,collapsible:true,url:'/files/list',method:'get'" rownumbers="true" pagination="true">
+		<thead>
+			<tr>
+				<th data-options="field:'id',width:50">id</th>
+				<th data-options="field:'name',width:120">origname</th> 
+			 
+				<th data-options="field:'type',width:140,align:'center'">类型</th>
+			 
+			</tr>
+		</thead>
+	</table>
+ <div id="toolbar">
+	<a href="/files/addFile" target="_blank" class="easyui-linkbutton" iconCls="icon-add" plain="true" >上传文件</a>
+ 
+</div>
+</body>
+</html>
