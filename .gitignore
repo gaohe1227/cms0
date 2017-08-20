@@ -1,0 +1,11 @@
+#maven
+target/*
+#java
+.settings/* 
+.classpath
+myapp.log
+.project
+/target/
+/transaction-logs/*
+/src/
+pom.xml
