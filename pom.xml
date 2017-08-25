@@ -87,7 +87,7 @@
 		</dependency>
 
 		<!-- tomcat 的支持. -->
-		<dependency>
+	<!-- 	<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
@@ -96,7 +96,7 @@
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
 			<scope>provided</scope>
-		</dependency>
+		</dependency> -->
 		<!-- 辅助依赖 -->
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -114,8 +114,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 		</dependency>
 		<!-- druid依赖 -->
-		<!-- <dependency> <groupId>com.alibaba</groupId> <artifactId>druid</artifactId> 
-			<version>1.0.25</version> </dependency> -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.0.25</version>
+		</dependency>
 
 		<!-- json -->
 		<dependency>
@@ -136,13 +139,8 @@
 			<version>2.5</version>
 		</dependency>
 		<!-- 热部署 -->
-<!-- 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-			<scope>true</scope>
-
-		</dependency> -->
+		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-devtools</artifactId> 
+			<optional>true</optional> <scope>true</scope> </dependency> -->
 	</dependencies>
 	<build>
 		<finalName>cms</finalName>
@@ -150,10 +148,8 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			<!-- 	<configuration> 
-					fork: 如果没有该项配置，肯呢个devtools不会起作用，即应用不会restart 
-					<fork>true</fork> 
-				</configuration> -->
+				<!-- <configuration> fork: 如果没有该项配置，肯呢个devtools不会起作用，即应用不会restart <fork>true</fork> 
+					</configuration> -->
 			</plugin>
 			<!-- 修改默认编译版本 -->
 			<plugin>

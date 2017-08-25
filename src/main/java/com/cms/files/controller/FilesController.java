@@ -1,4 +1,4 @@
-package com.cms.files.controllers;
+package com.cms.files.controller;
 
  
 import java.io.BufferedOutputStream;

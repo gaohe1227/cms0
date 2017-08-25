@@ -16,6 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cms.base.dao.CmsLogRepository;
 import com.cms.base.model.CmsLog;
 import com.cms.base.model.User;
+import com.util.IpUtils;
 
 /**
  * @author 高鹤
@@ -48,14 +49,15 @@ public class LogAspect {
         	   userid=loginuser.getUserid();
            }
            String method = request.getMethod();
-           String remoteAddr=request.getRemoteAddr();
+          // String remoteAddr=request.getRemoteAddr();
+           String ip= IpUtils.getClientIp(request);
            String params = "";
        
 /*           System.out.println("uri=" + uri + "; beanName=" + beanName + "; user=" + user
                    + "; methodName=" + methodName + "; params=" + params); */
            Date date=new Date();
            t.set(date);
-           CmsLog cmslog=new CmsLog( uri, remoteAddr, userid, date, null, null,1);
+           CmsLog cmslog=new CmsLog( uri, ip, userid, date, null, null,1);
             cmsLogRepository.save(cmslog);
        } catch (Exception e) {
        e.printStackTrace();
@@ -79,14 +81,16 @@ public class LogAspect {
        	   userid=loginuser.getUserid();
           }
           String method = request.getMethod();
-          String remoteAddr=request.getRemoteAddr();
+         
+          //String remoteAddr=request.getRemoteAddr();
+          String ip= IpUtils.getClientIp(request);
           String params = "";
       
 /*           System.out.println("uri=" + uri + "; beanName=" + beanName + "; user=" + user
                   + "; methodName=" + methodName + "; params=" + params); */
           Date start=t.get();
           Date end=new Date(); 
-          CmsLog cmslog=new CmsLog( uri, remoteAddr, userid, start, end, "耗时"+(end.getTime()-start.getTime())+"毫秒", 0);
+          CmsLog cmslog=new CmsLog( uri, ip, userid, start, end, "耗时"+(end.getTime()-start.getTime())+"毫秒", 0);
            cmsLogRepository.save(cmslog);
       } catch (Exception e) {
       e.printStackTrace();

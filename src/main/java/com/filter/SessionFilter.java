@@ -43,15 +43,17 @@ public class SessionFilter implements Filter {
 		HttpServletRequest httpServletRequest=(HttpServletRequest)request;
 		  HttpServletResponse response = (HttpServletResponse) servletResponse; 
 		  String uri = httpServletRequest.getRequestURI(); 
-		  System.out.println("uri====>"+uri);
-			 if(!uri.startsWith("/login")&&!uri.startsWith("/jquery")&&!uri.startsWith("/css")){ 
+		//  System.out.println("uri====>"+uri);
+			 if(!uri.startsWith("/login")&&!uri.startsWith("/jquery")&&!uri.startsWith("/css")&&!uri.startsWith("/druid/")){ 
 				  User loginuser =   (User) httpServletRequest.getSession().getAttribute("loginuser");
 		          if(loginuser==null){ 
+		        	 // System.out.println("uri====>"+uri);
 		        	   response.sendRedirect("/login");
 		        	   return;
 		          }
 		       
 			 }
+		
 			 chain.doFilter(request, response);
 			
 		// pass the request along the filter chain
