@@ -17,8 +17,12 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "t_cms_log")
-public class CmsLog {
+public class CmsLog implements java.io.Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
 	private Long id;

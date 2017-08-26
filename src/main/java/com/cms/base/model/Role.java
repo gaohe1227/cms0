@@ -16,7 +16,11 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "t_cms_role")
-public class Role {
+public class Role implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7802746814739220541L;
 	@Id
 	@GeneratedValue
 	private Integer id;

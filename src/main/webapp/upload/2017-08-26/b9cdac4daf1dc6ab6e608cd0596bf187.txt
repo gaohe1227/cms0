@@ -1,0 +1,10 @@
+# v4 JibsTree_Images.txt
+# Date: 2016/12/09 13:19:10
+# Root Path: C:\Users\¸ßº×\Pictures
+# Root Usable Space: 0
+# depth path directories fileCount fileSize
+0	*\	4	1	504
+1	*\Camera Roll	0	1	190
+1	*\JIBS-Delete	0	0	0
+1	*\JIBS-Park	0	0	0
+1	*\Saved Pictures	0	1	190

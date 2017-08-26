@@ -17,7 +17,13 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="t_cms_user")
-public class User {
+public class User  implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1829956553849573324L;
+	 
+
 	/**
 	 * 用户id
 	 */
