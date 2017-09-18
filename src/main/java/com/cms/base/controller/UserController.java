@@ -1,7 +1,19 @@
 package com.cms.base.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +22,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cms.base.model.User;
 import com.cms.base.service.RoleService;
 import com.cms.base.service.UserService;
+import com.common.UUIDUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.util.ExcelExport;
+import com.util.ExcelImport;
 import com.util.Result;
 
 @Controller
@@ -93,6 +109,199 @@ public class UserController {
 		  return false;
 		  
 		}
+		/**
+		 * 删除角色
+		 * 
+		 * @param roleVo
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/importUsers", method = RequestMethod.GET) 
+		public String upUsers()  {
+		 
+			return "basic/addUsers";
+		  
+		}
+	 
+			/**
+			 * 上传用户
+			 * 
+			 * @param roleVo
+			 * @return
+			 * @throws Exceptionkey
+			 */
+			@RequestMapping(value = "/upUsers", method = RequestMethod.POST)
+			@ResponseBody
+			public String upUsers(@RequestParam("file") MultipartFile file,  HttpServletRequest httpServletRequest)  {   
+			 	resultmap.put("todr"+httpServletRequest.getRequestedSessionId(),  new Result(1, "文件上传结束", null)); 
+				Result result = importUser(file,httpServletRequest);  
+				resultmap.put("todr"+httpServletRequest.getRequestedSessionId(),new Result(-10, null, null)); 
+				return result.getMessage();
+			  
+			}
+			ConcurrentHashMap<String, Result> resultmap = new ConcurrentHashMap<String, Result>(); 
+			/**
+			 * 获取进度
+			 * 
+			 * @param key
+			 * @return
+			 */
+		 
+			@RequestMapping("getResultmap") 
+			@ResponseBody
+			public String getResultmap(HttpServletRequest httpServletRequest) {
+				//Integer schoolid = Integer.valueOf((String) inv.getModel("moocSchool")); 
+				Result s = resultmap.get("todr"+httpServletRequest.getRequestedSessionId()); 
+			    if(s==null){
+			   	 try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+			   	s = resultmap.get("todr"+httpServletRequest.getRequestedSessionId());
+			    }
+			   	if(s==null){
+			   		return "-1";
+			   		
+			   	}
+			     if(s.getState()==-10){
+			    	 resultmap.remove("todr"+httpServletRequest.getRequestedSessionId());
+			     }
+				 
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("todr", s);
+				return jsonObject.toString();
+			} 
+			
+			
+			
+			public Result importUser(MultipartFile file,HttpServletRequest httpServletRequest ) {
+				String fileType = "";
+				Result result = null;
+				// 检查文件格式
+			/*	try {
+					String fileName = file.getOriginalFilename();
+					fileType = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+				}
+				catch (Exception e) {
+					result = new Result(-1, "上传文件出错", null);
+					return result;
+				}
+				if (!fileType.toLowerCase().equals("xls") && !fileType.toLowerCase().equals("xlsx")) {
+					result = new Result(0, "上传格式不对，请上传xls或xlsx格式文件", null);
+					return result;
+				}*/
+				// 处理文件内容
+				try { 
+					resultmap.put("todr"+httpServletRequest.getRequestedSessionId(), new Result(1, "上传结束,开始解析数据", null)); 
+					List<Map<String, Object>> errorList = excelHandle(file,httpServletRequest);
+					if (errorList.size() > 0) { 
+						String path = sbyy(errorList, "测试",httpServletRequest);
+						result = new Result(2, "操作失败,有" + errorList.size() + "条数据错误,<a href='/dowmFile?path="+path+"'>错误数据下载</a>", null);
+
+					}
+					else {
+						result = new Result(1, "操作成功", null);
+
+					}
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+					result = new Result(-1, "导入失败，请检查数据格式", null);
+					return result;
+				}
+				return result;
+			}
+			// 上传的excel处理：通过姓名、身份证号对比导入信息
+			public List<Map<String, Object>> excelHandle(MultipartFile file,HttpServletRequest httpServletRequest) throws IOException {
+			 
+				List<Map<String, Object>> errorList = new ArrayList<Map<String, Object>>();
+				new StringBuffer();
+				try {
+					Result result = new Result(0, "开始验证数据", null);
+					resultmap.put("todr"+httpServletRequest.getRequestedSessionId(), result);
+					for (int n = 0; n < 1; n++) {
+						String[][] data = ExcelImport.getData(file, 0, n);
+						int rowLength = data.length;
+					 
+						for (int i = 1; i < rowLength; i++) {
+							result.setMessage("验证第" + i + "条数据");
+							resultmap.put("todr"+httpServletRequest.getRequestedSessionId(), result);
+							if (StringUtils.isBlank(data[i][0])) {
+								this.maptoList(errorList, data[i], "姓名不存在");
+								continue;
+							}
+
+							if (StringUtils.isBlank(data[i][1])) {
+								this.maptoList(errorList, data[i], "usercode不存在");
+								continue;
+							} 
+							User user=new User();
+							user.setUsername(data[i][0].trim());
+							user.setUsercode(data[i][1]);
+							user.setUserpwd("123456");;
+							this.userService.edit(user);
+							result.setMessage("保存第" + i + "条数据");
+							resultmap.put("todr"+httpServletRequest.getRequestedSessionId(), result);
+
+						}
+					}
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+					logger.error(e.getMessage());
+				}
+				return errorList;
+			}
+			private void maptoList(List<Map<String, Object>> errorList, String[] data, String error) {
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("username", data[0]);
+				map.put("usercode", data[1]); 
+				map.put("error", error);
+				errorList.add(map);
+			}
+			/**
+			 * 生成Excel
+			 * @param errorList
+			 * @param name
+			 * @return
+			 * @throws UnsupportedEncodingException
+			 */
+			public String sbyy(List<Map<String, Object>> errorList, String name,HttpServletRequest httpServletRequest) throws UnsupportedEncodingException {
+
+				ExcelExport excelExport = new ExcelExport("2007");
+				List<List<String>> exportList = new ArrayList<List<String>>();
+				List<String> innerList1 = new ArrayList<String>();
+				innerList1.add("姓名");
+				innerList1.add("证件号");
+				innerList1.add("失败原因");
+				exportList.add(innerList1);
+				int size = errorList.size();
+				for (int i = 0; i < size; i++) {
+					List<String> innerList = new ArrayList<String>();
+					Map<String, Object> map = errorList.get(i);
+					innerList.add((String) map.get("username"));
+					innerList.add((String) map.get("usercode"));
+					innerList.add((String) map.get("error"));
+					exportList.add(innerList);
+				}
+				excelExport.addSheet(exportList, name);
+				String path = httpServletRequest.getSession().getServletContext().getRealPath("/");
+				// String filename=UUID.randomUUID().toString().replaceAll("-","");
+				String filename = UUIDUtils.getUID()+"error";
+				String filePath = "/upload" + File.separator + "upkc";
+				File folder = new File(path + filePath);
+				if (!folder.exists()) {
+					folder.mkdirs();
+				}
+				excelExport.writelocal(folder.getAbsolutePath(), filename);
+				new File(folder.getAbsolutePath() + File.separator + filename);
+				 filePath =filePath+ File.separator + URLEncoder.encode(filename, "utf8") + ".xlsx";
+				filePath = filePath.replaceAll("\\\\", "/");
+				return filePath;
+			}
+
 /**
 	 * 验证
 	 * 

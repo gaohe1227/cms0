@@ -138,6 +138,7 @@ public class FilesService {
 	}
 
 	/**
+	 * 处理上传文件
 	 * @Title: upFile @Description: TODO @param @param file @param @param
 	 * resp @param @param basePath @param @param dataStr @param @param
 	 * jsonObject @param @throws UnsupportedEncodingException @param @throws
@@ -162,9 +163,9 @@ public class FilesService {
 		System.out.println("上传文件完成");
 		jsonObject.put("code", 200);
 		jsonObject.put("path", new String(dataStr + java.io.File.separator + fileName));
-		PrintWriter printWriter = resp.getWriter();
+	/*	PrintWriter printWriter = resp.getWriter();
 		printWriter.write(jsonObject.toString());
-		printWriter.close();
+		printWriter.close();*/
 		Files files = new Files();
 		files.setOrigname(origname);
 		files.setType(filetype.substring(1));

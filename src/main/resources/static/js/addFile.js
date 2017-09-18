@@ -43,37 +43,7 @@ function uploadExcel(fileId) {
             }
         }); 
 }
-var timer = null;
-function getResultmap() {
-
-    $.ajax({
-        type: "get",
-        url: "/zhjs/yhjs/getResultmap?dateStr=" + new Date(),
-        data: {
-            "key": "todr"
-
-        },
-        success: function(meg) {
-            console.log(meg)
-            if (meg == -1) {
-                $("#jindu").html("上传结束")
-                clearInterval(timer);
-
-            } else {
-                var msg = eval('(' + meg + ')')
-                $("#jindu").html(msg.key.message)
-                if (msg.key.state == -1) {
-                    clearInterval(timer);
-                }
-
-            }
-
-        }
-
-    });
-
-}
-
+var timer = null; 
 function openBrower() {
     var ie = navigator.appName == "Microsoft Internet Explorer" ? true: false;
     if (ie) {
