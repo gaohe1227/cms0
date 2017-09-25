@@ -52,7 +52,7 @@ public class FilesController {
 	}
 
 	@RequestMapping(value = "/upFile", method = RequestMethod.POST)
-	public @ResponseBody void upFile(@RequestParam("file") MultipartFile file, HttpServletRequest req,
+	public @ResponseBody void upFile(@RequestParam(value="file",required=false) MultipartFile file, HttpServletRequest req,
 			HttpServletResponse resp) {
 		try {
 			String basePath = req.getSession().getServletContext().getRealPath("/upload");
